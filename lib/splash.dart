@@ -18,15 +18,12 @@ class _MyAppState extends State<MyApp> {
           body: Container(
         child: Stack(
           children: <Widget>[
-
             Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage('assets/images/SplashBB.jpg'),
-                        fit: BoxFit.cover
-                        ))
-                        ),
-            Container(height: 300, child: ProgressIndicator())
+                        fit: BoxFit.cover))),
+            Container(height: 800, child: ProgressIndicator())
           ],
         ),
       )),
@@ -54,7 +51,7 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
         setState(() {
           if (animation.value > 0.9) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => Login()));
+              MaterialPageRoute(builder: (BuildContext context) => Login()));
           }
         });
       });
@@ -71,17 +68,19 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
   Widget build(BuildContext context) {
     return new Center(
         child: new Column(
-            //width: 250,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 30,),
-                Image.asset('assets/images/barbLogoW.png', scale: 1.5),
-                LinearProgressIndicator(
-                  value: animation.value,
-                  backgroundColor: Colors.white,
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
-              ],
-            ));
+      //width: 250,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(
+          height: 30,
+        ),
+        Image.asset('assets/images/barbLogoW.png', scale: 1.2),
+        LinearProgressIndicator(
+          value: animation.value,
+          backgroundColor: Colors.white,
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple),
+        ),
+      ],
+    ));
   }
 }
