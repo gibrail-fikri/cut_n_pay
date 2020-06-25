@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cut_n_pay/signup.dart';
+import 'package:cut_n_pay/main.dart';
+import 'user.dart';
 
 void main() => runApp(Login());
 
@@ -18,7 +20,6 @@ class _LoginState extends State<Login> {
     super.initState();
     print("INITSTATE UP");
     passwordInvisible = true;
-    //loadPref();
   }
 
   @override
@@ -138,6 +139,10 @@ class _LoginState extends State<Login> {
                 elevation: 5,
                 onPressed: _signup,
               ),
+              GestureDetector(
+                  onTap: _toMainScreenAsGuest,
+                  child:
+                      Text('Continue as Guest', style: TextStyle(fontSize: 16)))
             ],
           )),
         ),
@@ -150,5 +155,17 @@ class _LoginState extends State<Login> {
   void _signup() {
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) => Signup()));
+  }
+
+  void _toMainScreenAsGuest() {
+    User _user = new User(
+        "cutnpayguest", "cutnpayguest@gmail.com", "012-3456789", "12345");
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => Mainscreen(
+                  user: _user,
+                )));
   }
 }

@@ -14,24 +14,31 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   data_connection_checker: ^0.3.4
-  http: ^0.12.0
+  http: ^0.12.1
+  material_design_icons_flutter: ^3.2.3895
   toast: ^0.1.5
-  shared_preferences: ^0.5.6+2
+  intl: ^0.16.1
+  url_launcher: ^5.4.11
+  shared_preferences: ^0.5.7+2
+  cached_network_image: ^2.2.0+1
+  numberpicker: ^1.2.0
   progress_dialog: ^1.2.0
+  webview_flutter: ^0.3.14+1
+  random_string: ^1.1.0
 
 
 # For information on the generic Dart part of this file, see the

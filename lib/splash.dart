@@ -49,7 +49,7 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
     animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {
-          if (animation.value > 0.9) {
+          if (animation.value > 0.99) {
             Navigator.push(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           }

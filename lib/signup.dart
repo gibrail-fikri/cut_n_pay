@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-
 void main() => runApp(Signup());
 
 class Signup extends StatefulWidget {
@@ -21,7 +20,7 @@ class _SignupState extends State<Signup> {
   GlobalKey<FormState> _key = new GlobalKey();
   bool _isChecked = false;
   String urlSignup =
-      "http://cutnpay.000webhostapp.com/cutnpay/php/register.php";
+      "https://cutnpay.000webhostapp.com/cutnpay/php/register.php";
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +54,6 @@ class _SignupState extends State<Signup> {
                                 labelText: 'Name',
                                 hintText: 'Input your name',
                                 icon: Icon(Icons.work),
-                                //errorText:
-                                //_validateName(_nameController.text)
                               ),
                               validator: validateName,
                             ),
@@ -70,7 +67,6 @@ class _SignupState extends State<Signup> {
                                 labelText: 'Email',
                                 hintText: 'Input your email',
                                 icon: Icon(Icons.alternate_email),
-                                //errorText: _validate(_emailController.text)
                               ),
                               validator: validateEmail,
                             ),
@@ -84,7 +80,6 @@ class _SignupState extends State<Signup> {
                                 labelText: 'Password',
                                 hintText: 'Input your password',
                                 icon: Icon(Icons.lock),
-                                //errorText: validate(_passController.text)
                               ),
                               validator: validatePassword,
                             ),
@@ -98,7 +93,6 @@ class _SignupState extends State<Signup> {
                                 labelText: 'Re-type Password',
                                 hintText: 'Re-type your password',
                                 icon: Icon(Icons.lock),
-                                //errorText: validate(_passController.text)
                               ),
                             ),
                             SizedBox(
@@ -111,7 +105,6 @@ class _SignupState extends State<Signup> {
                                 labelText: 'Phone Number',
                                 hintText: 'Input your phone number',
                                 icon: Icon(Icons.phone),
-                                //errorText: validate(_passController.text)
                               ),
                               validator: validatePhone,
                             ),
@@ -183,9 +176,6 @@ class _SignupState extends State<Signup> {
   }
 
   void _registerAccount() {
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String phone = _phoneController.text;
     String password = _passController.text;
     String confPass = _confPassController.text;
 
@@ -201,12 +191,9 @@ class _SignupState extends State<Signup> {
       return;
     }
 
-    //DIALOG
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           title: new Text(
             "Confirm Registration",
@@ -238,7 +225,6 @@ class _SignupState extends State<Signup> {
         );
       },
     );
-    //DIALOG
   }
 
   void _onChange(bool value) {
@@ -282,11 +268,11 @@ class _SignupState extends State<Signup> {
       String phone = _phoneController.text;
       String password = _passController.text;
 
-      ProgressDialog prog=new ProgressDialog(context,
+      ProgressDialog prog = new ProgressDialog(context,
           type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
       prog.style(
-        message: 'Sending request...',
-        borderRadius: 10.0,
+          message: 'Sending request...',
+          borderRadius: 10.0,
           backgroundColor: Colors.white,
           progressWidget: RefreshProgressIndicator(),
           elevation: 10.0,
@@ -298,9 +284,8 @@ class _SignupState extends State<Signup> {
           messageTextStyle: TextStyle(
               color: Colors.black,
               fontSize: 19.0,
-              fontWeight: FontWeight.w600)
-      ); 
-      prog.show();    
+              fontWeight: FontWeight.w600));
+      prog.show();
       http.post(urlSignup, body: {
         "name": name,
         "email": email,
@@ -310,13 +295,13 @@ class _SignupState extends State<Signup> {
         if (res.body == "failed") {
           Toast.show("Registration failed", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-              prog.dismiss();
+          prog.dismiss();
         } else {
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           Toast.show("Registration success", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-              prog.dismiss();
+          prog.dismiss();
         }
       }).catchError((err) {
         print(err);
