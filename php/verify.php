@@ -6,7 +6,7 @@ $email = $_GET['email'];
 $sql = "UPDATE USER SET VERIFY=1 WHERE EMAIL='$email'";
 
 if ($conn->query($sql) === true){
-    echo "success";
+    echo "Email is successfully verified!";
 }
 else {
     echo "failed";

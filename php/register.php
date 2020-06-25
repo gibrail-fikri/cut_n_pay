@@ -6,6 +6,11 @@ $email = $_POST['email'];
 $phone = $_POST['phone'];
 $password = sha1($_POST['password']);
 
+/*$name = $_GET['name'];
+$email = $_GET['email'];
+$phone = $_GET['phone'];
+$password = sha1($_GET['password']);*/
+
 $sqlinsert = "INSERT INTO USER(NAME,EMAIL,PASSWORD,PHONE,VERIFY) VALUES ('$name','$email','$password','$phone','0')";
 
 if ($conn->query($sqlinsert) === true){
@@ -13,6 +18,7 @@ if ($conn->query($sqlinsert) === true){
     echo "success";
 }
 else {
+    sendEmail($email);
     echo "failed";
 }
 
