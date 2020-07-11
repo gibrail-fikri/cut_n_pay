@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cut_n_pay/signup.dart';
 import 'package:cut_n_pay/main.dart';
 import 'user.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:toast/toast.dart';
 
 void main() => runApp(Login());
 
@@ -14,7 +17,7 @@ class _LoginState extends State<Login> {
   bool passwordInvisible = true;
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
-
+  String urlLogin = "https://cutnpay.000webhostapp.com/cutnpay/php/login.php--"; // remove bars later
   @override
   void initState() {
     super.initState();
@@ -150,7 +153,54 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _login() {}
+//PROGRESS
+  void _login() {
+    try {
+      ProgressDialog pr = new ProgressDialog(context,
+          type: ProgressDialogType.Normal, isDismissible: false);
+      pr.style(message: "Log in...");
+      pr.show();
+      String _email = _emailController.text;
+      String _password = _passController.text;
+      http.post(urlLogin, body: {
+        "email": _email,
+        "password": _password,
+      })
+          //.timeout(const Duration(seconds: 4))
+          .then((res) {
+        print(res.body);
+        var string = res.body;
+        List userdata = string.split(",");
+        if (userdata[0] == "success") {
+          User _user = new User(
+              userdata[1],
+              _email,
+              userdata[3],
+              _password,
+              );
+          pr.dismiss();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => Mainscreen(
+                        user: _user,
+                      )));
+        } else {
+          pr.dismiss();
+          Toast.show("Login failed", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        }
+      }).catchError((err) {
+        print(err);
+        pr.dismiss();
+      });
+    } on Exception catch (_) {
+      Toast.show("Error", context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    }
+  }
+//PROGRESS
+
 
   void _signup() {
     Navigator.push(context,

@@ -292,16 +292,25 @@ class _SignupState extends State<Signup> {
         "password": password,
         "phone": phone,
       }).then((res) {
-        if (res.body == "failed") {
-          Toast.show("Registration failed", context,
+        if (res.body == " failed") {
+          Navigator.pop(context,
+              MaterialPageRoute(builder: (BuildContext context) => Login()));
+          Toast.show("Duplicate username detected", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-          prog.dismiss();
-        } else {
+        } 
+        else if(res.body == " success"){
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           Toast.show("Registration success", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
           prog.dismiss();
+        }
+        else{
+          Navigator.pop(context,
+              MaterialPageRoute(builder: (BuildContext context) => Login()));
+          Toast.show("Server did not return any response", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+          print(res.body);
         }
       }).catchError((err) {
         print(err);
@@ -317,6 +326,9 @@ class _SignupState extends State<Signup> {
     } else if (!regExp.hasMatch(value)) {
       return "Name must only consist of letters";
     }
+      else if(value.length>15){
+        return "Username must be less than 15 letters";
+      }
     return null;
   }
 
