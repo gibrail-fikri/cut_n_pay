@@ -295,7 +295,7 @@ class _SignupState extends State<Signup> {
         if (res.body == " failed") {
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
-          Toast.show("Duplicate username detected", context,
+          Toast.show("Duplicate username and/or email detected", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         } 
         else if(res.body == " success"){

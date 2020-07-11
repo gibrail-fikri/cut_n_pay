@@ -5,8 +5,10 @@ import 'user.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(Login());
+bool rememberMe = false;
 
 class Login extends StatefulWidget {
   @override
@@ -17,11 +19,13 @@ class _LoginState extends State<Login> {
   bool passwordInvisible = true;
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
-  String urlLogin = "https://cutnpay.000webhostapp.com/cutnpay/php/login.php--"; // remove bars later
+  String urlLogin =
+      "https://cutnpay.000webhostapp.com/cutnpay/php/login.php";
   @override
   void initState() {
     super.initState();
     print("INITSTATE UP");
+    loadPref();
     passwordInvisible = true;
   }
 
@@ -96,9 +100,9 @@ class _LoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Checkbox(
-                                value: false,
+                                value: rememberMe,
                                 onChanged: (bool value) {
-                                  //_onRememberMeChanged(value);
+                                  _onRememberMeChanged(value);
                                 },
                               ),
                               Text('Remember Me ',
@@ -108,7 +112,7 @@ class _LoginState extends State<Login> {
                               GestureDetector(
                                   onTap: null,
                                   child: Text(
-                                      '                                                               Forgot password?',
+                                      '                                                                     Forgot password?',
                                       style: TextStyle(fontSize: 16)))
                             ],
                           ),
@@ -165,19 +169,11 @@ class _LoginState extends State<Login> {
       http.post(urlLogin, body: {
         "email": _email,
         "password": _password,
-      })
-          //.timeout(const Duration(seconds: 4))
-          .then((res) {
-        print(res.body);
+      }).then((res) {
         var string = res.body;
         List userdata = string.split(",");
-        if (userdata[0] == "success") {
-          User _user = new User(
-              userdata[1],
-              _email,
-              userdata[3],
-              _password,
-              );
+        if (userdata[0] == " success") {
+          User _user = new User(userdata[1], _email, userdata[3], _password);
           pr.dismiss();
           Navigator.push(
               context,
@@ -201,7 +197,6 @@ class _LoginState extends State<Login> {
   }
 //PROGRESS
 
-
   void _signup() {
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) => Signup()));
@@ -217,5 +212,50 @@ class _LoginState extends State<Login> {
             builder: (BuildContext context) => Mainscreen(
                   user: _user,
                 )));
+  }
+
+  void _onRememberMeChanged(bool newValue) => setState(() {
+        rememberMe = newValue;
+        print(rememberMe);
+        if (rememberMe) {
+          savepref(true);
+        } else {
+          savepref(false);
+        }
+      });
+
+  void savepref(bool value) async {
+    String email = _emailController.text;
+    String password = _passController.text;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (value) {
+      await prefs.setString('email', email);
+      await prefs.setString('pass', password);
+      Toast.show("Preferences have been saved", context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    } else {
+      await prefs.setString('email', '');
+      await prefs.setString('pass', '');
+      setState(() {
+        _emailController.text = '';
+        _passController.text = '';
+        rememberMe = false;
+      });
+      Toast.show("Preferences have removed", context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    }
+  }
+
+  Future<void> loadPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String email = (prefs.getString('email')) ?? '';
+    String password = (prefs.getString('pass')) ?? '';
+    if (email.length > 1) {
+      setState(() {
+        _emailController.text = email;
+        _passController.text = password;
+        rememberMe = true;
+      });
+    }
   }
 }
