@@ -13,17 +13,27 @@ class User {
     this._phone = phone;
   }
 
-  getname(){
+  getname() {
     return this._name;
   }
-  getemail(){
+
+  getemail() {
     return this._email;
   }
-  getpass(){
+
+  getpass() {
     return this._password;
   }
-  getphone(){
+
+  getphone() {
     return this._phone;
   }
-}
 
+  setname(name) {
+    this._name = name;
+  }
+
+  setphone(phone) {
+    this._phone = phone;
+  }
+}

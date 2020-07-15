@@ -21,7 +21,6 @@ class _SignupState extends State<Signup> {
   bool _isChecked = false;
   String urlSignup =
       "https://cutnpay.000webhostapp.com/cutnpay/php/register.php";
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -295,17 +294,15 @@ class _SignupState extends State<Signup> {
         if (res.body == " failed") {
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
-          Toast.show("Duplicate username and/or email detected", context,
+          Toast.show("Duplicate email detected", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-        } 
-        else if(res.body == " success"){
+        } else if (res.body == " success") {
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           Toast.show("Registration success", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
           prog.dismiss();
-        }
-        else{
+        } else {
           Navigator.pop(context,
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           Toast.show("Server did not return any response", context,
@@ -325,10 +322,9 @@ class _SignupState extends State<Signup> {
       return "Name is missing";
     } else if (!regExp.hasMatch(value)) {
       return "Name must only consist of letters";
+    } else if (value.length > 15) {
+      return "Username must be less than 15 letters";
     }
-      else if(value.length>15){
-        return "Username must be less than 15 letters";
-      }
     return null;
   }
 

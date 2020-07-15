@@ -8,7 +8,8 @@ class PaymentScreen extends StatefulWidget {
   final Shop shop;
   final User user;
   final String orderid;
-  PaymentScreen({Key key, this.shop, this.user, this.orderid})
+  final double price;
+  PaymentScreen({Key key, this.shop, this.user, this.orderid, this.price})
       : super(key: key);
 
   @override
@@ -24,7 +25,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('PAYMENT'),
-          // backgroundColor: Colors.deepOrange,
         ),
         body: Column(
           children: <Widget>[
@@ -38,7 +38,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         '&name=' +
                         widget.user.getname() +
                         '&amount=' +
-                        widget.shop.getprice().toString() +
+                        widget.price.toString() +
                         '&orderid=' +
                         widget.orderid,
                 javascriptMode: JavascriptMode.unrestricted,

@@ -19,12 +19,10 @@ class _LoginState extends State<Login> {
   bool passwordInvisible = true;
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
-  String urlLogin =
-      "https://cutnpay.000webhostapp.com/cutnpay/php/login.php";
+  String urlLogin = "https://cutnpay.000webhostapp.com/cutnpay/php/login.php";
   @override
   void initState() {
     super.initState();
-    print("INITSTATE UP");
     loadPref();
     passwordInvisible = true;
   }
@@ -91,9 +89,7 @@ class _LoginState extends State<Login> {
                                       passwordInvisible = !passwordInvisible;
                                     });
                                   },
-                                )
-                                //errorText: validate(_passController.text)
-                                ),
+                                )),
                           ),
                           SizedBox(height: 20),
                           Row(
@@ -157,7 +153,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-//PROGRESS
   void _login() {
     try {
       ProgressDialog pr = new ProgressDialog(context,
@@ -195,7 +190,6 @@ class _LoginState extends State<Login> {
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     }
   }
-//PROGRESS
 
   void _signup() {
     Navigator.push(context,
@@ -216,7 +210,6 @@ class _LoginState extends State<Login> {
 
   void _onRememberMeChanged(bool newValue) => setState(() {
         rememberMe = newValue;
-        print(rememberMe);
         if (rememberMe) {
           savepref(true);
         } else {

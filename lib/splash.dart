@@ -51,7 +51,7 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
         setState(() {
           if (animation.value > 0.99) {
             Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => Login()));
+                MaterialPageRoute(builder: (BuildContext context) => Login()));
           }
         });
       });
@@ -68,7 +68,6 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
   Widget build(BuildContext context) {
     return new Center(
         child: new Column(
-      //width: 250,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(

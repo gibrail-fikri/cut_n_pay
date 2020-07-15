@@ -67,11 +67,9 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
         "https://cutnpay.000webhostapp.com/cutnpay/php/loadpaymenthistory.php?";
     await http
         .post(urlLoadJobs, body: {"email": widget.user.getemail()}).then((res) {
-      print(res.body);
       if (res.body == "nodata") {
         setState(() {
           _paymentdata = null;
-          titlecenter = "No Previous Payment";
         });
       } else {
         setState(() {

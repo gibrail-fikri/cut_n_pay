@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cut_n_pay/paymenthistory.dart';
+import 'package:cut_n_pay/profilescreen.dart';
 import 'package:cut_n_pay/shop.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,7 +9,12 @@ import 'package:http/http.dart' as http;
 import 'user.dart';
 import 'package:cut_n_pay/user.dart';
 import 'package:cut_n_pay/orderpage.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+Position _currentLocation;
+List<Placemark> placemark;
+RefreshController _refreshController = RefreshController(initialRefresh: false);
 void main() => runApp(Mainscreen());
 
 class Mainscreen extends StatefulWidget {
@@ -27,10 +34,12 @@ class _MainscreenState extends State<Mainscreen> {
     super.initState();
     _load = true;
     _loadData();
+    _getCurrentLocation();
   }
 
   @override
   Widget build(BuildContext context) {
+    _loadData();
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
@@ -41,7 +50,6 @@ class _MainscreenState extends State<Mainscreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Shops'),
-          actions: <Widget>[],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
@@ -54,19 +62,23 @@ class _MainscreenState extends State<Mainscreen> {
   }
 
   Future<void> _loadData() async {
-    var res = await http.get(
-        Uri.encodeFull(
-            "https://cutnpay.000webhostapp.com/cutnpay/php/shops.json"),
-        headers: {"Accept": "application/json"});
-    if (res.statusCode == 200) {
-      setState(() {
-        var extractdata = json.decode(res.body);
-        _shops = extractdata['shops'];
-        _load = false;
-      });
-    } else {
-      print("error");
-    }
+    String urlLoadShops = server + "/php/load_shop.php";
+    await http.post(urlLoadShops, body: {}).then((res) {
+      if (res.body == "nodata") {
+        setState(() {
+          _shops = null;
+          _load = false;
+        });
+      } else {
+        setState(() {
+          var extractdata = json.decode(res.body);
+          _shops = extractdata["shops"];
+          _load = false;
+        });
+      }
+    }).catchError((err) {
+      print(err);
+    });
   }
 
   Widget mainDrawer(BuildContext context) {
@@ -76,45 +88,61 @@ class _MainscreenState extends State<Mainscreen> {
           child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountEmail: Text(widget.user.getemail()),
-            accountName: Text(widget.user.getname()),
+            accountEmail: null,
+            accountName: Text(
+              widget.user.getname(),
+              style: TextStyle(fontSize: 22),
+            ),
             currentAccountPicture: CircleAvatar(
               backgroundColor:
                   Theme.of(context).platform == TargetPlatform.android
-                      ? Colors.white
+                      ? Colors.black
                       : Colors.white,
-              backgroundImage: NetworkImage(
-                  server + "/profile/${widget.user.getemail()}/profilepic.png"),
+              child: Text(
+                widget.user.getname().toString().substring(0, 1).toUpperCase(),
+                style: TextStyle(fontSize: 40.0),
+              ),
             ),
           ),
           Card(
-            color: Colors.grey,
+            color: Colors.white,
             child: ListTile(
-                leading: Icon(Icons.person),
+                leading: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
                 title: Text(
                   "My profile",
                   style: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.black,
                     fontSize: 18,
                   ),
                 ),
-                trailing: Icon(Icons.arrow_forward),
+                trailing: Icon(Icons.arrow_forward, color: Colors.black),
                 onTap: () => {
                       Navigator.pop(context),
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => ProfileScreen(
+                                    user: widget.user,
+                                  ))).then((value) {
+                        setState(() {});
+                      })
                     }),
           ),
           Card(
-            color: Colors.grey,
+            color: Colors.white,
             child: ListTile(
-                leading: Icon(Icons.attach_money),
+                leading: Icon(Icons.attach_money, color: Colors.black),
                 title: Text(
                   "Payment history",
                   style: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.black,
                     fontSize: 18,
                   ),
                 ),
-                trailing: Icon(Icons.arrow_forward),
+                trailing: Icon(Icons.arrow_forward, color: Colors.black),
                 onTap: () => {
                       Navigator.pop(context),
                       Navigator.push(
@@ -127,51 +155,20 @@ class _MainscreenState extends State<Mainscreen> {
                     }),
           ),
           Card(
-            color: Colors.grey,
+            color: Colors.white,
             child: ListTile(
-                leading: Icon(Icons.favorite),
-                title: Text(
-                  "Favourite",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 18,
-                  ),
-                ),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () => {
-                      Navigator.pop(context),
-                    }),
-          ),
-          Card(
-            color: Colors.grey,
-            child: ListTile(
-                leading: Icon(Icons.credit_card),
-                title: Text(
-                  "Payment method",
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 18,
-                  ),
-                ),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () => {
-                      Navigator.pop(context),
-                    }),
-          ),
-          Card(
-            color: Colors.grey,
-            child: ListTile(
-                leading: Icon(Icons.info),
+                leading: Icon(Icons.info, color: Colors.black),
                 title: Text(
                   "App info",
                   style: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.black,
                     fontSize: 18,
                   ),
                 ),
-                trailing: Icon(Icons.arrow_forward),
+                trailing: Icon(Icons.arrow_forward, color: Colors.black),
                 onTap: () => {
                       Navigator.pop(context),
+                      _appinfo(),
                     }),
           ),
         ],
@@ -181,79 +178,127 @@ class _MainscreenState extends State<Mainscreen> {
 
   _showPage() {
     if (_load == false) {
-      return GridView.count(
-          crossAxisCount: 2,
-          children: List.generate(_shops.length, (index) {
-            return InkWell(
-                child: Card(
-                  color: Colors.black38,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5),
+      return SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(_shops.length, (index) {
+              return InkWell(
+                  child: Card(
+                    color: Colors.black87,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                      side: BorderSide(
+                        color: Colors.black,
+                      ),
                     ),
-                    side: BorderSide(
-                      color: Colors.black,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        ClipRect(
-                          child: CachedNetworkImage(
-                              height: 180,
-                              fit: BoxFit.cover,
-                              imageUrl:
-                                  "https://cutnpay.000webhostapp.com/cutnpay/images/${_shops[index]['imagename']}"),
-                        ),
-                        RaisedButton(
-                          child: Text(
-                            "${_shops[index]['loc_name']}",
+                    child: Padding(
+                      padding: const EdgeInsets.all(7.5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          ClipRect(
+                            child: CachedNetworkImage(
+                                height: 180,
+                                fit: BoxFit.cover,
+                                imageUrl:
+                                    "https://cutnpay.000webhostapp.com/cutnpay/images/${_shops[index]['imagename']}"),
+                          ),
+                          Text(
+                            "${_shops[index]['name']}",
                             style: TextStyle(
-                                fontSize: 22,
+                                fontSize: 19,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey),
+                                color: Colors.white),
                           ),
-                          color: Colors.black26,
-                          elevation: 10,
-                          onPressed: () => {_toShop(index)},
-                        ),
-                        Text(
-                          'RM ' + "${_shops[index]['price']}" + ".00",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                              _calculatedistance(index).toStringAsFixed(2) +
+                                  "km",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              )),
+                          Text(
+                            'RM ' + "${_shops[index]['price']}" + ".00",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                onTap: () {
-                  _toShop(index);
-                });
-          }));
+                  onTap: () {
+                    _toShop(index);
+                  });
+            })),
+      );
     }
   }
 
   void _toShop(index) {
     Shop shop = new Shop(
-        _shops[index]['pid'],
-        _shops[index]['loc_name'],
-        _shops[index]['price'] + .0,
+        _shops[index]['id'].toString(),
+        _shops[index]['name'],
+        double.parse(_shops[index]['price']),
         _shops[index]['type'],
         _shops[index]['contact'],
         _shops[index]['address'],
-        _shops[index]['imagename']);
-    print(_shops[index]['price']);
+        _shops[index]['imagename'],
+        double.parse(_shops[index]['lat']),
+        double.parse(_shops[index]['lon']));
+
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => Order(
                   shop: shop,
                   user: widget.user,
-                )));
+                ))).then((value) {
+      setState(() {});
+    });
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      _currentLocation = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  _calculatedistance(int index) {
+    double dis = sqrt(pow(
+            (_currentLocation.latitude - double.parse(_shops[index]['lat'])),
+            2) +
+        pow(_currentLocation.longitude - double.parse(_shops[index]['lon']),
+            2));
+    return dis * 100;
+  }
+
+  _appinfo() {}
+
+  void _onRefresh() async {
+    setState(() {
+      _getCurrentLocation();
+    });
+    await Future.delayed(Duration(milliseconds: 500));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    setState(() {
+      _getCurrentLocation();
+    });
+    await Future.delayed(Duration(milliseconds: 500));
+    _refreshController.loadComplete();
   }
 }

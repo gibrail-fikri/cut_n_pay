@@ -9,6 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="cut_n_pay"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY" 
+             android:value="AIzaSyBMU9lyWtCibXNm3qc5tdenQWLq1BFqkyM"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -27,4 +29,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 </manifest>
