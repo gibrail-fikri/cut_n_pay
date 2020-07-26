@@ -8,6 +8,7 @@ class Shop {
   String _imagename;
   double _lat;
   double _lon;
+  String _owneremail;
 
   Shop(
     String id,
@@ -19,6 +20,7 @@ class Shop {
     String imagename,
     double lat,
     double lon,
+    String owneremail,
   ) {
     this._id = id;
     this._locName = locName;
@@ -29,6 +31,7 @@ class Shop {
     this._imagename = imagename;
     this._lat = lat;
     this._lon = lon;
+    this._owneremail = owneremail;
   }
   getpid() {
     return this._id;
@@ -65,7 +68,11 @@ class Shop {
   getlon() {
     return this._lon;
   }
-  setprice(price){
-    this._price=price;
+
+  getowner() {
+    return this._owneremail;
+  }
+  setprice(price) {
+    this._price = price;
   }
 }

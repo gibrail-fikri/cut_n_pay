@@ -17,7 +17,7 @@ double totalprice, addservice;
 CameraPosition _curpos;
 Completer<GoogleMapController> _controller = Completer();
 Set<Marker> _markers = {};
-bool admin=false;
+bool admin = false;
 TextEditingController _newPriceController = new TextEditingController();
 
 class Order extends StatefulWidget {
@@ -37,8 +37,11 @@ class _Orderstate extends State<Order> {
     _check1 = false;
     _check2 = false;
     _check3 = false;
-    if (widget.user.getemail() == "cutnpayadmin@gmail.com") {
+    if (widget.user.getemail() == "cutnpayadmin@gmail.com" ||
+        widget.user.getemail() == widget.shop.getowner()) {
       admin = true;
+    } else {
+      admin = false;
     }
   }
 
@@ -54,7 +57,7 @@ class _Orderstate extends State<Order> {
             child: Text(
               '${widget.shop.getlocname()}',
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -110,6 +113,24 @@ class _Orderstate extends State<Order> {
                       ),
                       padding: EdgeInsets.all(15.0),
                       shape: CircleBorder(),
+                    ),
+                    Visibility(
+                      visible: admin,
+                      child: RawMaterialButton(
+                        onPressed: () {},
+                        elevation: 2.0,
+                        fillColor: Colors.red,
+                        child: GestureDetector(
+                          child: Icon(
+                            Icons.delete_forever,
+                            size: 35.0,
+                            color: Colors.white,
+                          ),
+                          onTap: () => _deleteshop(),
+                        ),
+                        padding: EdgeInsets.all(15.0),
+                        shape: CircleBorder(),
+                      ),
                     ),
                     RawMaterialButton(
                       onPressed: () {},
@@ -473,6 +494,79 @@ class _Orderstate extends State<Order> {
               context,
               Toast.show("Change Successful", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM));
+        });
+      } else {
+        Navigator.pop(
+            context,
+            Toast.show("Server did not return any response", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM));
+      }
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  _deleteshop() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete? Warning, this operation is permanent"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text("Confirm", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.pop(context);
+                _confirmDelete();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _confirmDelete() {
+    String urlDeleteShop =
+        "https://cutnpay.000webhostapp.com/cutnpay/php/deleteshop.php";
+    ProgressDialog prog = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
+    prog.style(
+        message: 'Sending request...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: RefreshProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+    prog.show();
+    http.post(urlDeleteShop, body: {
+      "id": widget.shop.getpid(),
+      "imagename": widget.shop.getimagename()
+    }).then((res) {
+      if (res.body == " failed") {
+        Navigator.pop(
+            context,
+            Toast.show("Process could not be completed", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM));
+      } else if (res.body == " success") {
+        setState(() {
+          Navigator.pop(
+              context,
+              Toast.show("Shop is deleted", context,
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM));
+          Navigator.pop(context);
         });
       } else {
         Navigator.pop(

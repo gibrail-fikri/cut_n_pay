@@ -33,6 +33,7 @@ class _LoginState extends State<Login> {
       debugShowCheckedModeBanner: false,
       title: 'Material App',
       home: Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text('Sign in'),
           centerTitle: true,
@@ -44,14 +45,14 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(
-                height: 30,
+                height: 7.5,
               ),
               Image.asset(
                 'assets/images/BarbLogo.png',
                 scale: 0.5,
               ),
               SizedBox(
-                height: 30,
+                height: 7.5,
               ),
               Card(
                   elevation: 5,
@@ -66,10 +67,9 @@ class _LoginState extends State<Login> {
                               labelText: 'Email',
                               hintText: 'Enter your email',
                               icon: Icon(Icons.alternate_email),
-                              //errorText: validate(_emailController.text)
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
                           TextField(
                             obscureText: passwordInvisible,
                             controller: _passController,
@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
                                   },
                                 )),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -108,18 +108,18 @@ class _LoginState extends State<Login> {
                               GestureDetector(
                                   onTap: null,
                                   child: Text(
-                                      '                                                                     Forgot password?',
+                                      '                   Forgot password?',
                                       style: TextStyle(fontSize: 16)))
                             ],
                           ),
                         ],
                       ))),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               MaterialButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0)),
-                minWidth: 350,
-                height: 50,
+                minWidth: 150,
+                height: 40,
                 child: Text('Log in', style: TextStyle(fontSize: 24)),
                 color: Colors.black,
                 textColor: Colors.white,
@@ -127,16 +127,16 @@ class _LoginState extends State<Login> {
                 onPressed: _login,
               ),
               SizedBox(
-                height: 225,
+                height: 10,
               ),
               Text('Don\'t have an account?', style: TextStyle(fontSize: 18)),
               SizedBox(height: 10),
               MaterialButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0)),
-                minWidth: 175,
-                height: 50,
-                child: Text('Sign up', style: TextStyle(fontSize: 24)),
+                minWidth: 120,
+                height: 35,
+                child: Text('Sign up', style: TextStyle(fontSize: 20)),
                 color: Colors.black,
                 textColor: Colors.white,
                 elevation: 5,

@@ -6,11 +6,9 @@ $mobile = $_GET['mobile'];
 $name = $_GET['name']; 
 $amount = $_GET['amount']; 
 $orderid = $_GET['orderid'];
-
 $api_key = 'c51ed044-d4f8-4592-b8ec-2c3a65ff122e';
 $collection_id = 'a8to4pal';
 $host = 'https://billplz-staging.herokuapp.com/api/v3/bills';
-
 
 $data = array(
           'collection_id' => $collection_id,
@@ -22,7 +20,6 @@ $data = array(
           'callback_url' => "https://cutnpay.000webhostapp.com/cutnpay/return_url",
           'redirect_url' => "https://cutnpay.000webhostapp.com/cutnpay/php/payment_update.php?userid=$email&mobile=$mobile&amount=$amount&orderid=$orderid" 
 );
-
 
 $process = curl_init($host );
 curl_setopt($process, CURLOPT_HEADER, 0);

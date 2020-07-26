@@ -1,7 +1,6 @@
 <?php
 
 sendEmail('gibrailfikri@gmail.com');
-
 function sendEmail($useremail) {
     $to      = $useremail; 
     $subject = 'Verification for CutNPay'; 
@@ -11,5 +10,4 @@ function sendEmail($useremail) {
     'X-Mailer: PHP/' . phpversion(); 
     mail($to, $subject, $message, $headers); 
 }
-
 ?>

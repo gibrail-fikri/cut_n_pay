@@ -3,11 +3,9 @@ error_reporting(0);
 include_once ("dbconnect.php");
 $email = $_POST['email'];
 
-
 if (isset($email)){
    $sql = "SELECT * FROM PAYMENT WHERE USERID = '$email' ORDER BY DATE DESC";
 }
-
 
 $result = $conn->query($sql);
 

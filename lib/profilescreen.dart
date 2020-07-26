@@ -35,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return WillPopScope(
       onWillPop: null,
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             backgroundColor: Colors.black,
             title: Text(widget.user.getname()),

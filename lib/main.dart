@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:cut_n_pay/addshop.dart';
+import 'package:cut_n_pay/approval.dart';
 import 'package:cut_n_pay/paymenthistory.dart';
 import 'package:cut_n_pay/profilescreen.dart';
 import 'package:cut_n_pay/shop.dart';
@@ -15,6 +17,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 Position _currentLocation;
 List<Placemark> placemark;
 RefreshController _refreshController = RefreshController(initialRefresh: false);
+bool admin = false, isUser = false;
 void main() => runApp(Mainscreen());
 
 class Mainscreen extends StatefulWidget {
@@ -35,6 +38,14 @@ class _MainscreenState extends State<Mainscreen> {
     _load = true;
     _loadData();
     _getCurrentLocation();
+    if (widget.user.getemail() == "cutnpayadmin@gmail.com") {
+      admin = true;
+    } else {
+      admin = false;
+    }
+    if (widget.user.getemail() != "cutnpayguest@gmail.com") {
+      isUser = true;
+    }
   }
 
   @override
@@ -49,7 +60,23 @@ class _MainscreenState extends State<Mainscreen> {
         drawer: mainDrawer(context),
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('Shops'),
+          title: Text(
+            'Shops',
+            style: TextStyle(fontSize: 18),
+          ),
+          actions: <Widget>[
+            Visibility(
+              visible: isUser,
+              child: GestureDetector(
+                onTap: _toAddShop,
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8),
@@ -171,6 +198,49 @@ class _MainscreenState extends State<Mainscreen> {
                       _appinfo(),
                     }),
           ),
+          Visibility(
+            visible: admin,
+            child: Card(
+              color: Colors.white,
+              child: ListTile(
+                  leading: Icon(
+                    Icons.check_box,
+                    color: Colors.black,
+                  ),
+                  title: Text(
+                    "Approval (admin)",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                  trailing: Icon(Icons.arrow_forward, color: Colors.black),
+                  onTap: () => {
+                        Navigator.pop(context),
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => Approval()))
+                      }),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            child: ListTile(
+                leading: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.black,
+                ),
+                title: Text(
+                  "Logout",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: Icon(Icons.arrow_forward, color: Colors.black),
+                onTap: () => {Navigator.pop(context), Navigator.pop(context)}),
+          ),
         ],
       )),
     );
@@ -204,7 +274,7 @@ class _MainscreenState extends State<Mainscreen> {
                         children: <Widget>[
                           ClipRect(
                             child: CachedNetworkImage(
-                                height: 180,
+                                height: 110,
                                 fit: BoxFit.cover,
                                 imageUrl:
                                     "https://cutnpay.000webhostapp.com/cutnpay/images/${_shops[index]['imagename']}"),
@@ -212,7 +282,7 @@ class _MainscreenState extends State<Mainscreen> {
                           Text(
                             "${_shops[index]['name']}",
                             style: TextStyle(
-                                fontSize: 19,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),
@@ -220,14 +290,14 @@ class _MainscreenState extends State<Mainscreen> {
                               _calculatedistance(index).toStringAsFixed(2) +
                                   "km",
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
                               )),
                           Text(
                             'RM ' + "${_shops[index]['price']}" + ".00",
                             style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),
@@ -253,7 +323,8 @@ class _MainscreenState extends State<Mainscreen> {
         _shops[index]['address'],
         _shops[index]['imagename'],
         double.parse(_shops[index]['lat']),
-        double.parse(_shops[index]['lon']));
+        double.parse(_shops[index]['lon']),
+        _shops[index]['owneremail']);
 
     Navigator.push(
         context,
@@ -284,7 +355,20 @@ class _MainscreenState extends State<Mainscreen> {
     return dis * 100;
   }
 
-  _appinfo() {}
+  _appinfo() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text("App Info")),
+            content: Container(
+                child: Text(
+              "CutNPay project, created for STIW2044 Group A \nCreated by Gibrail Fikri bin Yusni 264195\nVersion 1.0",
+              style: TextStyle(color: Colors.black),
+            )),
+          );
+        });
+  }
 
   void _onRefresh() async {
     setState(() {
@@ -295,10 +379,19 @@ class _MainscreenState extends State<Mainscreen> {
   }
 
   void _onLoading() async {
-    setState(() {
-      _getCurrentLocation();
-    });
     await Future.delayed(Duration(milliseconds: 500));
     _refreshController.loadComplete();
+  }
+
+  void _toAddShop() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => AddShop(
+                  email: widget.user.getemail(),
+                  currentLocation: _currentLocation,
+                ))).then((value) {
+      setState(() {});
+    });
   }
 }

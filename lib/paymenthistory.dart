@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'user.dart';
 import 'package:intl/intl.dart';
 import 'package:cut_n_pay/user.dart';
+import 'package:toast/toast.dart';
 
 void main() => runApp(PaymentHistoryScreen());
 
@@ -67,9 +68,11 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
         "https://cutnpay.000webhostapp.com/cutnpay/php/loadpaymenthistory.php?";
     await http
         .post(urlLoadJobs, body: {"email": widget.user.getemail()}).then((res) {
-      if (res.body == "nodata") {
+      if (res.body == " nodata") {
         setState(() {
           _paymentdata = null;
+          Toast.show("No payment history", context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         });
       } else {
         setState(() {

@@ -23,146 +23,150 @@ class _SignupState extends State<Signup> {
       "https://cutnpay.000webhostapp.com/cutnpay/php/register.php";
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Material App',
-      home: Scaffold(
+    return WillPopScope(
+      onWillPop: null,
+      child: Scaffold(
         appBar: AppBar(
           title: Text('Sign up'),
           centerTitle: true,
           backgroundColor: Colors.black,
         ),
-        body: Form(
-          key: _key,
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 150,
-                ),
-                Card(
-                    elevation: 5,
-                    child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              controller: _nameController,
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                                hintText: 'Input your name',
-                                icon: Icon(Icons.work),
-                              ),
-                              validator: validateName,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                hintText: 'Input your email',
-                                icon: Icon(Icons.alternate_email),
-                              ),
-                              validator: validateEmail,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              obscureText: true,
-                              controller: _passController,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                hintText: 'Input your password',
-                                icon: Icon(Icons.lock),
-                              ),
-                              validator: validatePassword,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              obscureText: true,
-                              controller: _confPassController,
-                              decoration: InputDecoration(
-                                labelText: 'Re-type Password',
-                                hintText: 'Re-type your password',
-                                icon: Icon(Icons.lock),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              controller: _phoneController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: 'Phone Number',
-                                hintText: 'Input your phone number',
-                                icon: Icon(Icons.phone),
-                              ),
-                              validator: validatePhone,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Checkbox(
-                                  value: _isChecked,
-                                  onChanged: (bool value) {
-                                    _onChange(value);
-                                  },
+        body: SingleChildScrollView(
+          child: Form(
+            key: _key,
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 75,
+                  ),
+                  Card(
+                      elevation: 5,
+                      child: Container(
+                          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                controller: _nameController,
+                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                  labelText: 'Name',
+                                  hintText: 'Input your name',
+                                  icon: Icon(Icons.work),
                                 ),
-                                Text(
-                                  "By submitting this form, I agree to Cut N' Pay's ",
-                                  style: TextStyle(fontSize: 16),
+                                validator: validateName,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  hintText: 'Input your email',
+                                  icon: Icon(Icons.alternate_email),
                                 ),
-                                GestureDetector(
-                                    onTap: _showTerms,
+                                validator: validateEmail,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                obscureText: true,
+                                controller: _passController,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  hintText: 'Input your password',
+                                  icon: Icon(Icons.lock),
+                                ),
+                                validator: validatePassword,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                obscureText: true,
+                                controller: _confPassController,
+                                decoration: InputDecoration(
+                                  labelText: 'Re-type Password',
+                                  hintText: 'Re-type your password',
+                                  icon: Icon(Icons.lock),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: 'Phone Number',
+                                  hintText: 'Input your phone number',
+                                  icon: Icon(Icons.phone),
+                                ),
+                                validator: validatePhone,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Checkbox(
+                                    value: _isChecked,
+                                    onChanged: (bool value) {
+                                      _onChange(value);
+                                    },
+                                  ),
+                                  Flexible(
                                     child: Text(
-                                      'EULA',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ))
-                              ],
-                            ),
-                            SizedBox(height: 30),
-                            SizedBox(
-                              width: double.infinity,
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                minWidth: 350,
-                                height: 50,
-                                child: Text('Submit'),
-                                color: Colors.black,
-                                textColor: Colors.white,
-                                elevation: 15,
-                                onPressed: _registerAccount,
-                              ),
-                            ),
-                            SizedBox(height: 30),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text('Already registered?',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                    )),
-                                GestureDetector(
-                                    onTap: _toLogin,
-                                    child: Text('  Sign in',
+                                      "By submitting this form, I agree to Cut N' Pay's ",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                      onTap: _showTerms,
+                                      child: Text(
+                                        'EULA',
                                         style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)))
-                              ],
-                            ),
-                          ],
-                        ))),
-              ],
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ))
+                                ],
+                              ),
+                              SizedBox(height: 30),
+                              SizedBox(
+                                width: double.infinity,
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
+                                  minWidth: 350,
+                                  height: 50,
+                                  child: Text('Submit'),
+                                  color: Colors.black,
+                                  textColor: Colors.white,
+                                  elevation: 15,
+                                  onPressed: _registerAccount,
+                                ),
+                              ),
+                              SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text('Already registered?',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      )),
+                                  GestureDetector(
+                                      onTap: _toLogin,
+                                      child: Text('  Sign in',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold)))
+                                ],
+                              ),
+                            ],
+                          ))),
+                ],
+              ),
             ),
           ),
         ),
@@ -307,7 +311,6 @@ class _SignupState extends State<Signup> {
               MaterialPageRoute(builder: (BuildContext context) => Login()));
           Toast.show("Server did not return any response", context,
               duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-          print(res.body);
         }
       }).catchError((err) {
         print(err);
